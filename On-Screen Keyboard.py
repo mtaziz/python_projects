@@ -53,7 +53,6 @@ def press(value):
             if button == 'Space':
                 Button(root, bg='light sky blue', width=95, text=button, command=command).grid(row=rows, column=columns,
                                                                                                columnspan=15)
-
             else:
                 Button(root, bg='light sky blue', width=5, text=button, command=command).grid(row=rows, column=columns)
                 columns += 1
@@ -78,7 +77,6 @@ def press(value):
             if button == 'Space':
                 Button(root, bg='light sky blue', width=95, text=button, command=command).grid(row=rows, column=columns,
                                                                                                columnspan=15)
-
             else:
                 Button(root, bg='light sky blue', width=5, text=button, command=command).grid(row=rows, column=columns)
                 columns += 1
@@ -103,7 +101,6 @@ def press(value):
             if button == 'Space':
                 Button(root, bg='light sky blue', width=95, text=button, command=command).grid(row=rows, column=columns,
                                                                                                columnspan=15)
-
             else:
                 Button(root, bg='light sky blue', width=5, text=button, command=command).grid(row=rows, column=columns)
                 columns += 1
@@ -123,7 +120,6 @@ def press(value):
             if button == 'Space':
                 Button(root, bg='light sky blue', width=95, text=button, command=command).grid(row=rows, column=columns,
                                                                                                columnspan=15)
-
             else:
                 Button(root, bg='light sky blue', width=5, text=button, command=command).grid(row=rows, column=columns)
                 columns += 1
@@ -144,7 +140,6 @@ for button in keys:
     if button == 'Space':
         Button(root, bg='light sky blue', width=95, text=button, command=command).grid(row=rows, column=columns,
                                                                                        columnspan=15)
-
     else:
         Button(root, bg='light sky blue', width=5, text=button, command=command).grid(row=rows, column=columns)
         columns += 1
