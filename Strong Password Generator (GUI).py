@@ -62,4 +62,4 @@ while True:
     exit_button = Button(root, text='Exit', bg='black', fg='white', command=exit)
     exit_button.pack(side=RIGHT)
 
-    root.mainloop()
+    mainloop()
