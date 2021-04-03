@@ -157,5 +157,4 @@ for button in keys:
             columns = 0
             rows += 1
 
-# Function call
 mainloop()
