@@ -1,161 +1,182 @@
-from tkinter import *
+import pygame
+import random
+import os
 
-# Generating window
-root = Tk()
-root.title('On-Screen Keyboard')
-root.configure(bg='black')
+# Initialization
+pygame.init()
 
-# Disabling maximize
-root.resizable(False, False)
+# Colors
+black = (0, 0, 0)
+white = (255, 255, 255)
+red = (255, 0, 0)
+blue = (0, 0, 255)
+green = (0, 255, 0)
 
-# Generating area for typing text.
-text_area = Text(root, height=10, width=80, font=('arial', 10))
-text_area.grid(row=1, columnspan=40)
+# Screen width and height.
+s_width = 500
+s_height = 500
 
-# Initial point for rows and columns.
-rows = 2
-columns = 0
+# Game Screen
+screen = pygame.display.set_mode((s_width, s_height))
+pygame.display.set_caption('Snake Game')
+pygame.display.update()
+clock = pygame.time.Clock()
 
-# List of keys
-keys = ['\'', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'BackS', 'Del',
-        'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '\\', '7', '8', '9',
-        'caps', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', 'Enter', '4', '5', '6',
-        '↑ Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', '↑ Shift', '1', '2', '3',
-        'Space']
+# Fonts
+font1 = pygame.font.SysFont('calibri', 15)
+font2 = pygame.font.SysFont('bold', 50)
+font3 = pygame.font.SysFont('poppins', 60)
 
+def display_text(text, font, color, x, y):
+    '''This function is used to display text on screen.'''
+    screen_text = font.render(text, True, color)
+    screen.blit(screen_text, [x, y])
 
-def press(value):
-    '''This function contains actions for different buttons.'''
-    if value == 'Space':
-        text_area.insert(INSERT, ' ')
+def plot_snake(window, color, coordinates, size):
+    '''This function is used to plot snake on screen.'''
+    for x, y in coordinates:
+        pygame.draw.rect(window, color, [x, y, size, size])
 
-    elif value == 'Tab':
-        text_area.insert(INSERT, '\t')
+def welcome_screen():
+    '''This function displays the welcome screen.'''
+    game_exit = False
+    while not game_exit:
+        screen.fill(black)
+        display_text('SNAKES', font3, blue, 155, 220)
+        display_text('Press ENTER to play.', font1, white, 185, 260)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game_exit = True
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    game()
+        pygame.display.update()
+        clock.tick(40)
 
-    elif value == 'Enter':
-        text_area.insert(INSERT, '\n')
+def game():
+    '''This function contains the main game loop and game variables.'''
+    # Boolean variables
+    game_exit = False
+    game_over = False
 
-    elif value == 'Del':
-        text_area.delete(1.0, END)
+    # Coordinates of snake
+    snake_x = 245
+    snake_y = 245
 
-    elif value == 'BackS':
-        screen_text = text_area.get(1.0, END)
-        text_area.delete(1.0, END)
-        text_area.insert(INSERT, screen_text[:-2])
+    # Variable for moving snake.
+    velocity_x = 0
+    velocity_y = 0
 
-    elif value == '↑ Shift':
-        # List of keys when shift is pressed.
-        shift_up_keys = ['\"', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 'BackS', 'Del',
-                         'Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '|', '7', '8', '9',
-                         'caps', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', 'Enter', '4', '5', '6',
-                         '↓ Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?', '↓ Shift', '1', '2', '3',
-                         'Space']
+    # Speed
+    change_velocity = 5
 
-        rows = 2
-        columns = 0
+    # Random coordinates of food.
+    food_x = random.randint(20, s_width - 20)
+    food_y = random.randint(20, s_height - 20)
 
-        for button in shift_up_keys:
-            command = lambda key=button: press(key)
+    # Variable to increase and control the size of the snake.
+    snake_list = []
+    snake_length = 1
 
-            if button == 'Space':
-                Button(root, bg='light sky blue', width=95, text=button, command=command).grid(row=rows, column=columns, columnspan=15)
-            else:
-                Button(root, bg='light sky blue', width=5, text=button, command=command).grid(row=rows, column=columns)
-                columns += 1
+    # Score
+    score = 0
 
-                if columns == 15:
-                    columns = 0
-                    rows += 1
+    # Checking if the file exits and creating it if not present.
+    if not os.path.exists('highscore.txt'):
+        with open('highscore.txt', 'w') as f:
+            f.write('0')
 
-    elif value == '↓ Shift':
-        # List of keys when shift is pressed again.
-        shift_dn_keys = ['\'', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'BackS', 'Del',
-                         'Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '\\', '7', '8', '9',
-                         'caps', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', 'Enter', '4', '5', '6',
-                         '↑ Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', '↑ Shift', '1', '2', '3',
-                         'Space']
+    # Storing the file content in a variable.
+    with open('highscore.txt', 'r') as f:
+        high_score = f.read()
 
-        rows = 2
-        columns = 0
+    # Gameloop
+    while not game_exit:
+        if game_over:
+            # Writing highscore in the file.
+            with open('highscore.txt', 'w') as f:
+                f.write(str(high_score))
+            screen.fill(black)
+            display_text('Game Over!', font2, white, 150, 220)
+            display_text('Press ENTER to continue...', font1, white, 175, 255)
+            display_text('Press r to reset the high score.', font1, red, 5, 5)
 
-        for button in shift_dn_keys:
-            command = lambda key=button: press(key)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    with open('highscore.txt', 'w') as f:
+                        f.write(str(high_score))
+                    game_exit = True
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        game()
+                    if event.key == pygame.K_r:
+                        with open('highscore.txt', 'w') as f:
+                            f.write('0')
 
-            if button == 'Space':
-                Button(root, bg='light sky blue', width=95, text=button, command=command).grid(row=rows, column=columns, columnspan=15)
-            else:
-                Button(root, bg='light sky blue', width=5, text=button, command=command).grid(row=rows, column=columns)
-                columns += 1
+                        # Function call
+                        game()
+        else:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    game_exit = True
 
-                if columns == 15:
-                    columns = 0
-                    rows += 1
+                # Controls
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_UP:
+                        velocity_y = -change_velocity
+                        velocity_x = 0
+                    if event.key == pygame.K_DOWN:
+                        velocity_y = change_velocity
+                        velocity_x = 0
+                    if event.key == pygame.K_RIGHT:
+                        velocity_x = change_velocity
+                        velocity_y = 0
+                    if event.key == pygame.K_LEFT:
+                        velocity_x = -change_velocity
+                        velocity_y = 0
 
-    elif value == 'caps':
-        # List of keys when caps is pressed.
-        caps_keys = ['\'', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'BackS', 'Del',
-                     'Tab', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '\\', '7', '8', '9',
-                     'CAPS', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', 'Enter', '4', '5', '6',
-                     '↑ Shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/', '↑ Shift', '1', '2', '3',
-                     'Space']
+            # Changing snake's position.
+            snake_x += velocity_x
+            snake_y += velocity_y
 
-        rows = 2
-        columns = 0
+            # Eat mechanism
+            if abs(snake_x - food_x) < 8 and abs(snake_y - food_y) < 8:
+                snake_length += 2
+                score += 10
+                food_x = random.randint(20, s_width - 20)
+                food_y = random.randint(20, s_height - 20)
 
-        for button in caps_keys:
-            command = lambda key=button: press(key)
+            screen.fill(black)
+            display_text('SCORE: ' + str(score), font1, green, 155, 5)
+            display_text('HIGH SCORE: ' + high_score, font1, green, 255, 5)
+            head = [snake_x, snake_y]
+            snake_list.append(head)
 
-            if button == 'Space':
-                Button(root, bg='light sky blue', width=95, text=button, command=command).grid(row=rows, column=columns, columnspan=15)
-            else:
-                Button(root, bg='light sky blue', width=5, text=button, command=command).grid(row=rows, column=columns)
-                columns += 1
+            # Controlling snake's length to stop it from keep growing.
+            if len(snake_list) > snake_length:
+                del snake_list[0]
 
-                if columns == 15:
-                    columns = 0
-                    rows += 1
+            # These two conditions below will check for death.
+            if snake_x == 0 or snake_x == s_width or snake_y == 0 or snake_y == s_height:
+                if score > int(high_score):
+                    high_score = score
+                game_over = True
 
-    elif value == 'CAPS':
-        # Using the global keys list when caps is pressed again.
-        global keys
-        rows = 2
-        columns = 0
+            if head in snake_list[:-1]:
+                if score > int(high_score):
+                    high_score = score
+                game_over = True
 
-        for button in keys:
-            command = lambda key=button: press(key)
+            # Plotting snake
+            plot_snake(screen, white, snake_list, 10)
+            # Plotting food
+            pygame.draw.rect(screen, blue, [food_x, food_y, 10, 10])
 
-            if button == 'Space':
-                Button(root, bg='light sky blue', width=95, text=button, command=command).grid(row=rows, column=columns, columnspan=15)
-            else:
-                Button(root, bg='light sky blue', width=5, text=button, command=command).grid(row=rows, column=columns)
-                columns += 1
+        pygame.display.update()
+        clock.tick(60)
 
-                if columns == 15:
-                    columns = 0
-                    rows += 1
-
-    else:
-        text_area.insert(INSERT, value)
-    
-    # This will make sure that cursor is continuously blinking to make it visible to us. 
-    text_area.focus_set()
-
-
-# Looping through the list of keys and generating buttons in our root window.
-for button in keys:
-    # Command for our buttons.
-    command = lambda key=button: press(key)
-    
-    # Generating space button separately.
-    if button == 'Space':
-        Button(root, bg='light sky blue', width=95, text=button, command=command).grid(row=rows, column=columns, columnspan=15)
-    else:
-        Button(root, bg='light sky blue', width=5, text=button, command=command).grid(row=rows, column=columns)
-        columns += 1
-
-        if columns == 15:
-            columns = 0
-            rows += 1
+    quit()
+    pygame.quit()
 
 # Function call
-mainloop()
+welcome_screen()
