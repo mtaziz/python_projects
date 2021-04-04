@@ -9,7 +9,7 @@ root.configure(bg='black')
 root.resizable(False, False)
 
 # Heading
-heading = Label(root, text='BASIC CALCULATOR', bg='black', fg='white', font='poppins 10 bold')
+heading = Label(root, text='SIMPLE CALCULATOR', bg='black', fg='white', font='poppins 10 bold')
 heading.grid(columnspan=50)
 
 # Generating entry widget
