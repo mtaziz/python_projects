@@ -1,4 +1,5 @@
 from tkinter import *
+import re
 
 # Generating window
 root = Tk()
@@ -28,22 +29,28 @@ columns = 0
 
 def press(value):
     '''This function contains actions for different buttons.'''
-    try:
-        if value == 'C':
-            text_area.delete(0, END)
+    if value == 'C':
+        text_area.delete(0, END)
 
-        elif value == '=':
-            screen_text = eval(text_area.get())
+    elif value == '=':
+        screen_text = text_area.get()
+
+        # Regex for matching valid input.
+        input_check_regex = re.compile(r'^-?\d+[-/+*\d]+-?\d+$')
+
+        # findall() method returns a list.
+        input = input_check_regex.findall(screen_text)
+
+        if len(input) != 0:
             text_area.delete(0, END)
-            text_area.insert(INSERT, screen_text)
+            text_area.insert(INSERT, eval(input[0]))
 
         else:
-            text_area.insert(INSERT, value)
-    
-    # Handling error raised by wrong input.
-    except SyntaxError:
-        text_area.delete(0, END)
-        text_area.insert(INSERT, 'ERROR press C')
+            text_area.delete(0, END)
+            text_area.insert(INSERT, 'ERROR press C')
+
+    else:
+        text_area.insert(INSERT, value)
     
     # This will make sure that cursor is continuously blinking to make it visible to us.
     text_area.focus_set()
