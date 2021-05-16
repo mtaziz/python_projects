@@ -82,6 +82,8 @@ def game():
 
     # Gameloop
     while not game_exit:
+        black_block_size = 60
+
         if game_win:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_RETURN]:
@@ -91,41 +93,39 @@ def game():
             if event.type == pygame.QUIT:
                 pygame.quit()
 
-        # Capturing keys for controls
-        keys = pygame.key.get_pressed()
+            # Capturing keys for controls
+            if event.type == pygame.KEYDOWN:
 
-        black_block_size = 60
+                # Controls
+                if event.key == pygame.K_DOWN and black_block_coordinates[0][1] > black_block_size + 2:
+                    black_block_coordinates[1][0], black_block_coordinates[1][1] = black_block_coordinates[0][0], black_block_coordinates[0][1]
+                    black_block_coordinates[0][1] -= black_block_size + 2
 
-        # Controls
-        if keys[pygame.K_DOWN] and black_block_coordinates[0][1] > black_block_size + 2:
-            black_block_coordinates[1][0], black_block_coordinates[1][1] = black_block_coordinates[0][0], black_block_coordinates[0][1]
-            black_block_coordinates[0][1] -= black_block_size + 2
+                    # Pausing time for smooth controls
+                    time.sleep(0.2)
 
-            # Pausing time for smooth controls
-            time.sleep(0.2)
+                if event.key == pygame.K_UP and black_block_coordinates[0][
+                    1] < screen_height - black_block_size - black_block_size + 2:
+                    black_block_coordinates[1][0], black_block_coordinates[1][1] = black_block_coordinates[0][0], black_block_coordinates[0][1]
+                    black_block_coordinates[0][1] += black_block_size + 2
 
-        if keys[pygame.K_UP] and black_block_coordinates[0][
-            1] < screen_height - black_block_size - black_block_size + 2:
-            black_block_coordinates[1][0], black_block_coordinates[1][1] = black_block_coordinates[0][0], black_block_coordinates[0][1]
-            black_block_coordinates[0][1] += black_block_size + 2
+                    # Pausing time for smooth controls
+                    time.sleep(0.2)
 
-            # Pausing time for smooth controls
-            time.sleep(0.2)
+                if event.key == pygame.K_RIGHT and black_block_coordinates[0][0] > black_block_size + 2:
+                    black_block_coordinates[1][0], black_block_coordinates[1][1] = black_block_coordinates[0][0], black_block_coordinates[0][1]
+                    black_block_coordinates[0][0] -= black_block_size + 2
 
-        if keys[pygame.K_RIGHT] and black_block_coordinates[0][0] > black_block_size + 2:
-            black_block_coordinates[1][0], black_block_coordinates[1][1] = black_block_coordinates[0][0], black_block_coordinates[0][1]
-            black_block_coordinates[0][0] -= black_block_size + 2
+                    # Pausing time for smooth controls
+                    time.sleep(0.2)
 
-            # Pausing time for smooth controls
-            time.sleep(0.2)
+                if event.key == pygame.K_LEFT and black_block_coordinates[0][
+                    0] < screen_width - black_block_size - black_block_size + 2:
+                    black_block_coordinates[1][0], black_block_coordinates[1][1] = black_block_coordinates[0][0], black_block_coordinates[0][1]
+                    black_block_coordinates[0][0] += black_block_size + 2
 
-        if keys[pygame.K_LEFT] and black_block_coordinates[0][
-            0] < screen_width - black_block_size - black_block_size + 2:
-            black_block_coordinates[1][0], black_block_coordinates[1][1] = black_block_coordinates[0][0], black_block_coordinates[0][1]
-            black_block_coordinates[0][0] += black_block_size + 2
-
-            # Pausing time for smooth controls
-            time.sleep(0.2)
+                    # Pausing time for smooth controls
+                    time.sleep(0.2)
 
 
         # Plotting black block
